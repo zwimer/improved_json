@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Optional, Union, Container, Iterable, Text, get_origin, get_args, cast
+from typing import Any, List, Dict, Optional, Union, Container, Iterable, get_origin, get_args, cast
 from types import NoneType, UnionType
 from collections import abc
 from pathlib import Path
@@ -12,7 +12,6 @@ improved_json_type = (
 lists = (list, List, Container, abc.Container, Iterable, abc.Iterable)
 dicts = (dict, Dict, Container, abc.Container, Iterable, abc.Iterable)
 unions = (UnionType, Union, Optional)
-strs = (str, Text)
 custom = (Path,)
 
 
@@ -26,7 +25,6 @@ def _test(cond: bool, obj: improved_json_type, type_: type) -> None:
         raise TypeError(f"{obj} is not of type: {type_}")
 
 
-# pylint: disable=too-many-return-statements
 def type_check(obj: improved_json_type, type_: type) -> None:
     """
     Supports type_ containing some parameterized generic types from the typing module
@@ -38,15 +36,12 @@ def type_check(obj: improved_json_type, type_: type) -> None:
     """
     if type_ == Any:
         return
-    for i in (bool, int, float, NoneType):
+    for i in (bool, int, float, str, NoneType):
         if type_ == i:
             _test(isinstance(obj, i), obj, type_)
             return
     if type_ == Path:
         _test(isinstance(obj, Path), obj, type_)
-        return
-    if type_ in strs:
-        _test(isinstance(obj, str), obj, type_)
         return
     # Composite type
     origin = get_origin(type_)
@@ -85,7 +80,7 @@ def _check_dict(obj: dict[str, improved_json_type], type_: type) -> None:
         return
     if len(args) != 2:
         raise ValueError(f"dict object may only have 0 or 2 parameters: {type_}")
-    if args[0] not in strs:
+    if args[0] != str:
         raise ValueError("dict first parameter must be str")
     if len(args) == 2:
         for i in obj.values():
