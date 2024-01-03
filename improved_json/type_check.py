@@ -1,6 +1,5 @@
 from typing import Any, List, Dict, Optional, Union, get_origin, get_args, cast
 from types import NoneType, UnionType
-from collections import abc
 from pathlib import Path
 
 
@@ -36,7 +35,7 @@ def type_check(obj: improved_json_type, type_: type) -> None:
     if type_ == Any:
         return
     if type_ == int:  # bool is an int
-        _test(type(obj) == int, obj, int)
+        _test(type(obj) == int, obj, int)  # noqa: E721
         return
     for i in (bool, float, str, NoneType, Path):
         if type_ == i:
@@ -79,7 +78,7 @@ def _check_dict(obj: dict[str, improved_json_type], type_: type) -> None:
         return
     if len(args) != 2:
         raise ValueError(f"dict object may only have 0 or 2 parameters: {type_}")
-    if not args[0] in (str, Path):
+    if args[0] not in (str, Path):
         raise ValueError(f"dict first parameter must be Path or str, not: {args[0]}")
     for i, k in obj.items():
         _test(isinstance(i, args[0]), i, args[0])
