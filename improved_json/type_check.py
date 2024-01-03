@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Optional, Union, Container, Iterable, get_origin, get_args, cast
+from typing import Any, List, Dict, Optional, Union, get_origin, get_args, cast
 from types import NoneType, UnionType
 from collections import abc
 from pathlib import Path
@@ -6,13 +6,12 @@ from pathlib import Path
 
 json_type = None | str | int | float | bool | dict[str, "json_type"] | list["json_type"]
 improved_json_type = (
-    None | str | int | float | bool | dict[str, "improved_json_type"] | list["improved_json_type"] | Path
+    None | str | int | float | bool | dict[str | Path, "improved_json_type"] | list["improved_json_type"] | Path
 )
 
-lists = (list, List, Container, abc.Container, Iterable, abc.Iterable)
-dicts = (dict, Dict, Container, abc.Container, Iterable, abc.Iterable)
+lists = (list, List)
+dicts = (dict, Dict)
 unions = (UnionType, Union, Optional)
-custom = (Path,)
 
 
 def _test(cond: bool, obj: improved_json_type, type_: type) -> None:
@@ -31,18 +30,18 @@ def type_check(obj: improved_json_type, type_: type) -> None:
     Also supports some parameterized generic without parameters (i.e. as generics)
     Raises TypeError if obj is not of type type_
     Raises ValueError if type_ is invalid
-    :obj: A valid json object to type check
+    :obj: A valid improved_json object to type check
     :type_: The type to check if obj is
     """
     if type_ == Any:
         return
-    for i in (bool, int, float, str, NoneType):
+    if type_ == int:  # bool is an int
+        _test(type(obj) == int, obj, int)
+        return
+    for i in (bool, float, str, NoneType, Path):
         if type_ == i:
             _test(isinstance(obj, i), obj, type_)
             return
-    if type_ == Path:
-        _test(isinstance(obj, Path), obj, type_)
-        return
     # Composite type
     origin = get_origin(type_)
     if origin is None:
@@ -57,7 +56,7 @@ def type_check(obj: improved_json_type, type_: type) -> None:
         _test(isinstance(obj, dict), obj, type_)
         _check_dict(cast(dict[str, improved_json_type], obj), type_)
         return
-    if origin in unions:
+    if origin in unions:  # Any already handled above
         for i in get_args(type_):
             try:
                 type_check(obj, i)
@@ -65,7 +64,7 @@ def type_check(obj: improved_json_type, type_: type) -> None:
             except TypeError:
                 pass
         _test(False, obj, type_)
-    raise ValueError("Bad input type found in obj; this is not a json!")
+    raise ValueError(f"type_ must be a valid improved json type; not: {type_}")
 
 
 def _check_dict(obj: dict[str, improved_json_type], type_: type) -> None:
@@ -80,11 +79,12 @@ def _check_dict(obj: dict[str, improved_json_type], type_: type) -> None:
         return
     if len(args) != 2:
         raise ValueError(f"dict object may only have 0 or 2 parameters: {type_}")
-    if args[0] != str:
-        raise ValueError("dict first parameter must be str")
-    if len(args) == 2:
-        for i in obj.values():
-            type_check(i, args[1])
+    if not args[0] in (str, Path):
+        raise ValueError(f"dict first parameter must be Path or str, not: {args[0]}")
+    for i, k in obj.items():
+        _test(isinstance(i, args[0]), i, args[0])
+        if len(args) == 2:
+            type_check(k, args[1])
 
 
 def _check_list(obj: list[improved_json_type], type_: type) -> None:
