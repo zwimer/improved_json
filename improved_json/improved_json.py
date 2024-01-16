@@ -1,20 +1,17 @@
-from typing import Any, cast
 from pathlib import Path
+from typing import Any
 import json
 
 from .type_check import type_check, improved_json_type
+from .code import encode, decode
 
 
-# TODO: tuple support
 __all__ = (
     "loadf",
     "dumpf",
     "loads",
     "dumps",
 )
-
-
-PATH_PREFIX = "Path s#*E3|: "
 
 
 def loadf(path: str | Path, *args, **kwargs) -> improved_json_type:
@@ -55,7 +52,7 @@ def loads(data: str | bytes, type_: type | Any = Any, **kwargs) -> improved_json
     :param type_: The required return type
     :return: The json object constructed from data
     """
-    ret = _replace(json.loads(data, **kwargs), False)
+    ret = encode(json.loads(data, **kwargs))
     type_check(ret, type_)
     return ret
 
@@ -67,17 +64,4 @@ def dumps(obj: improved_json_type, **kwargs) -> str:
     :param obj: The json object to convert to a string
     :return: obj represented as a string
     """
-    return json.dumps(_replace(obj, True), **kwargs)
-
-
-def _replace(o: improved_json_type, to_string: bool) -> improved_json_type:
-    if isinstance(o, dict):
-        return {cast(str | Path, _replace(i, to_string)): _replace(k, to_string) for i, k in o.items()}
-    if isinstance(o, (tuple, list)):  # Support tuples to be nice
-        return type(o)(_replace(i, to_string) for i in o)
-    if to_string:
-        if isinstance(o, Path):
-            return f"{PATH_PREFIX}{o}"
-    elif isinstance(o, str) and o.startswith(PATH_PREFIX):
-        return Path(o[len(PATH_PREFIX) :])
-    return o
+    return json.dumps(decode(obj), **kwargs)

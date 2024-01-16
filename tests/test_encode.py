@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 import json
 
-from improved_json.improved_json import PATH_PREFIX
+from improved_json.code import PATH_PREFIX
 import improved_json
 
 standard = {

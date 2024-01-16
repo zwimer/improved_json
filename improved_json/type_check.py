@@ -5,7 +5,15 @@ from pathlib import Path
 
 json_type = None | str | int | float | bool | dict[str, "json_type"] | list["json_type"]
 improved_json_type = (
-    None | str | int | float | bool | dict[str | Path, "improved_json_type"] | list["improved_json_type"] | Path
+    None
+    | str
+    | int
+    | float
+    | bool
+    | dict[str | bytes | Path, "improved_json_type"]
+    | list["improved_json_type"]
+    | Path
+    | bytes
 )
 
 lists = (list, List)
@@ -20,10 +28,10 @@ def _test(cond: bool, obj: improved_json_type, type_: type) -> None:
     :param type_: The type obj_ should be
     """
     if not cond:
-        raise TypeError(f"{obj} is not of type: {type_}")
+        raise TypeError(f"obj is not of type: {type_}", obj)
 
 
-def type_check(obj: improved_json_type, type_: type) -> None:
+def type_check(obj: improved_json_type, type_: type | Any) -> None:
     """
     Supports type_ containing some parameterized generic types from the typing module
     Also supports some parameterized generic without parameters (i.e. as generics)
@@ -37,7 +45,7 @@ def type_check(obj: improved_json_type, type_: type) -> None:
     if type_ == int:  # bool is an int
         _test(type(obj) == int, obj, int)  # noqa: E721
         return
-    for i in (bool, float, str, NoneType, Path):
+    for i in (bool, float, str, NoneType, Path, bytes):
         if type_ == i:
             _test(isinstance(obj, i), obj, type_)
             return
