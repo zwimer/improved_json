@@ -2,7 +2,7 @@ from base64 import a85encode, a85decode
 from pathlib import Path
 from typing import cast
 
-from .type_check import json_type, improved_json_type
+from .types import json_type, improved_json_type
 
 
 def encode(o: json_type) -> improved_json_type:

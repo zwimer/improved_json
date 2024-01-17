@@ -6,12 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "improved_json"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.10",
 ]
 license = {text = "GPL"}
 description = "A small add-on for python's builtin json library"
 urls = {Homepage = "https://github.com/zwimer/improved_json"}
-requires-python = ">= 3.8"
+requires-python = ">= 3.10"
+dependencies = [
+    "simple_type_checker",
+]
 dynamic = ["version"]
 
 [project.readme]
@@ -35,7 +38,7 @@ version = {attr = "improved_json.__version__"}
 
 [tool.black]
 line-length = 120
-target-version = ["py38"]
+target-version = ["py310"]
 
 [tool.ruff]
 ignore=["E731"]
@@ -45,4 +48,5 @@ line-length = 120
 
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 120
-disable = "unspecified-encoding,missing-module-docstring"
+disable = "unspecified-encoding,missing-module-docstring,too-few-public-methods,missing-class-docstring,missing-function-docstring"
+

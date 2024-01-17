@@ -2,7 +2,9 @@ from pathlib import Path
 from typing import Any
 import json
 
-from .type_check import type_check, improved_json_type
+from simple_type_check import type_check
+
+from .types import improved_json_type
 from .code import encode, decode
 
 
@@ -53,7 +55,8 @@ def loads(data: str | bytes, type_: type | Any = Any, **kwargs) -> improved_json
     :return: The json object constructed from data
     """
     ret = encode(json.loads(data, **kwargs))
-    type_check(ret, type_)
+    if not type_check(ret, type_):
+        raise TypeError("Return value is not of type: {type_}", ret)
     return ret
 
 
