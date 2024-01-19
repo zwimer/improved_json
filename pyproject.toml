@@ -13,7 +13,7 @@ description = "A small add-on for python's builtin json library"
 urls = {Homepage = "https://github.com/zwimer/improved_json"}
 requires-python = ">= 3.10"
 dependencies = [
-    "simple_type_checker",
+    "simple_type_checker>=2.2.0",
 ]
 dynamic = ["version"]
 

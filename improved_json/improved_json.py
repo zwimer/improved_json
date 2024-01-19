@@ -2,9 +2,9 @@ from pathlib import Path
 from typing import Any
 import json
 
-from simple_type_check import type_check
+from .type_check import type_check
 
-from .types import improved_json_type
+from .types import ImprovedJsonType
 from .code import encode, decode
 
 
@@ -16,7 +16,7 @@ __all__ = (
 )
 
 
-def loadf(path: str | Path, *args, **kwargs) -> improved_json_type:
+def loadf(path: str | Path, *args, **kwargs) -> ImprovedJsonType:
     """
     A wrapper around loads that loads the data field from the given file path
     Other arguments are otherwise passed through to loads
@@ -43,7 +43,7 @@ def dumpf(path: str | Path, *args, **kwargs) -> int:
         return f.write(out)
 
 
-def loads(data: str | bytes, type_: type | Any = Any, **kwargs) -> improved_json_type:
+def loads(data: str | bytes, type_: type | Any = Any, **kwargs) -> ImprovedJsonType:
     """
     Load a json object from the string data
     Other arguments are otherwise passed through to json.loads
@@ -60,7 +60,7 @@ def loads(data: str | bytes, type_: type | Any = Any, **kwargs) -> improved_json
     return ret
 
 
-def dumps(obj: improved_json_type, **kwargs) -> str:
+def dumps(obj: ImprovedJsonType, **kwargs) -> str:
     """
     Dump the improved json object to a string
     Other arguments are otherwise passed through to json.dumps

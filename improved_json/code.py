@@ -2,21 +2,21 @@ from base64 import a85encode, a85decode
 from pathlib import Path
 from typing import cast
 
-from .types import json_type, improved_json_type
+from .types import JsonType, ImprovedJsonType
 
 
-def encode(o: json_type) -> improved_json_type:
+def encode(o: JsonType) -> ImprovedJsonType:
     """
-    Convert a json_type object to an improved_json_type object
+    Convert a JsonType object to an ImprovedJsonType object
     """
-    return cast(improved_json_type, _replace(o, True))
+    return cast(ImprovedJsonType, _replace(o, True))
 
 
-def decode(o: improved_json_type) -> json_type:
+def decode(o: ImprovedJsonType) -> JsonType:
     """
-    Convert an improved_json_type object to a json_type object
+    Convert an ImprovedJsonType object to a JsonType object
     """
-    return cast(json_type, _replace(o, False))
+    return cast(JsonType, _replace(o, False))
 
 
 #
@@ -29,7 +29,7 @@ BYTES_PREFIX_TXT = "BytesT &%d3: "
 BYTES_PREFIX_ENC = "BytesE w&>1: "
 
 
-def _encode_item(o: json_type) -> improved_json_type:
+def _encode_item(o: JsonType) -> ImprovedJsonType:
     if isinstance(o, str):
         if o.startswith(PATH_PREFIX):
             return Path(o[len(PATH_PREFIX) :])
@@ -37,10 +37,10 @@ def _encode_item(o: json_type) -> improved_json_type:
             return o[len(BYTES_PREFIX_TXT) :].encode()
         if o.startswith(BYTES_PREFIX_ENC):
             return a85decode(o[len(BYTES_PREFIX_ENC) :])
-    return cast(improved_json_type, o)
+    return cast(ImprovedJsonType, o)
 
 
-def _decode_item(o: improved_json_type) -> json_type:
+def _decode_item(o: ImprovedJsonType) -> JsonType:
     if isinstance(o, Path):
         return f"{PATH_PREFIX}{o}"
     if isinstance(o, bytes):
@@ -48,14 +48,14 @@ def _decode_item(o: improved_json_type) -> json_type:
             return BYTES_PREFIX_TXT + o.decode()
         except UnicodeDecodeError:
             return BYTES_PREFIX_ENC + a85encode(o).decode()
-    return cast(json_type, o)
+    return cast(JsonType, o)
 
 
-def _replace(o: json_type | improved_json_type, encode: bool) -> json_type | improved_json_type:
+def _replace(o: JsonType | ImprovedJsonType, enc: bool) -> JsonType | ImprovedJsonType:
     # Recursive step
     if isinstance(o, dict):
-        return {_replace(i, encode): _replace(k, encode) for i, k in o.items()}  # type: ignore
+        return {_replace(i, enc): _replace(k, enc) for i, k in o.items()}  # type: ignore
     if isinstance(o, (tuple, list)):  # Support tuples to be nice
-        return type(o)(_replace(i, encode) for i in o)  # type: ignore
+        return type(o)(_replace(i, enc) for i in o)  # type: ignore
     # Coding step
-    return (_encode_item if encode else _decode_item)(o)  # type: ignore
+    return (_encode_item if enc else _decode_item)(o)  # type: ignore
