@@ -1,6 +1,7 @@
 """
 Extend simple_type_check's default type checker to support JsonType and ImprovedJsonType
 """
+
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
