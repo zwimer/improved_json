@@ -7,12 +7,11 @@ from .type_check import type_check
 from .types import ImprovedJsonType
 from .code import encode, decode
 
-
 __all__ = (
-    "loadf",
     "dumpf",
-    "loads",
     "dumps",
+    "loadf",
+    "loads",
 )
 
 
