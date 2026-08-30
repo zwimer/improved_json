@@ -22,9 +22,7 @@ path_s = f"{PATH_PREFIX}{path}"
 
 
 class TestEncode(unittest.TestCase):
-    """
-    Test improved_json's json encoding abilities
-    """
+    """Test improved_json's json encoding abilities"""
 
     def test_standard(self):
         self.assertEqual(improved_json.loads(standard_s), standard)

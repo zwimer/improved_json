@@ -6,16 +6,12 @@ from .types import JsonType, ImprovedJsonType
 
 
 def encode(o: JsonType) -> ImprovedJsonType:
-    """
-    Convert a JsonType object to an ImprovedJsonType object
-    """
+    """Convert a JsonType object to an ImprovedJsonType object"""
     return cast(ImprovedJsonType, _replace(o, True))
 
 
 def decode(o: ImprovedJsonType) -> JsonType:
-    """
-    Convert an ImprovedJsonType object to a JsonType object
-    """
+    """Convert an ImprovedJsonType object to a JsonType object"""
     return cast(JsonType, _replace(o, False))
 
 

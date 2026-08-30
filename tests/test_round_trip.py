@@ -22,9 +22,7 @@ def _rt(x):
 
 
 class TestRoundTrip(unittest.TestCase):
-    """
-    Test improved_json's json encoding and decoding to ensure roundtrips work
-    """
+    """Test improved_json's json encoding and decoding to ensure roundtrips work"""
 
     def test_standard(self):
         self.assertEqual(standard, _rt(standard))

@@ -23,9 +23,7 @@ path_s = f"{PATH_PREFIX}{path}"
 
 
 class TestDecode(unittest.TestCase):
-    """
-    Test improved_json's json decoding abilities
-    """
+    """Test improved_json's json decoding abilities"""
 
     def test_standard(self):
         self.assertEqual(improved_json.dumps(standard), standard_s)

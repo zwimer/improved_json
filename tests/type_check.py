@@ -4,9 +4,7 @@ from improved_json import JsonType, ImprovedJsonType, code, loads
 
 
 class TestTypeCheck(unittest.TestCase):
-    """
-    Test improved_json's json type checking
-    """
+    """Test improved_json's json type checking"""
 
     def test_correct(self):
         loads("1", int)

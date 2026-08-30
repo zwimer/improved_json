@@ -6,9 +6,7 @@ import improved_json
 
 
 class TestDecode(unittest.TestCase):
-    """
-    Test improved_json's json encoding/decoding of types not in normal json
-    """
+    """Test improved_json's json encoding/decoding of types not in normal json"""
 
     def _test_both(self, o, s: str) -> None:
         s = f'"{s}"'

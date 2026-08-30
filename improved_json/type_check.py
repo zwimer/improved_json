@@ -1,6 +1,4 @@
-"""
-Extend simple_type_check's default type checker to support JsonType and ImprovedJsonType
-"""
+"""Extend simple_type_check's default type checker to support JsonType and ImprovedJsonType"""
 
 from __future__ import annotations
 from typing import TYPE_CHECKING
@@ -14,18 +12,14 @@ if TYPE_CHECKING:
 
 
 class JsonChecker(TopLevelCheck):
-    """
-    A type checker for JsonType
-    """
+    """A type checker for JsonType"""
 
     def __call__(self, obj: Any, type_: Any) -> bool:
         return type_ == "JsonType" and self._recurse(obj, JsonType)
 
 
 class ImprovedJsonChecker(TopLevelCheck):
-    """
-    A type checker for ImprovedJsonType
-    """
+    """A type checker for ImprovedJsonType"""
 
     def __call__(self, obj: Any, type_: Any) -> bool:
         return type_ == "ImprovedJsonType" and self._recurse(obj, ImprovedJsonType)
